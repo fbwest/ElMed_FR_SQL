@@ -106,7 +106,6 @@ insert into @form_sampleT
 	select rowNum, profil_name, RSLT, s.DET, DR, DATE_1, KD, NPOLIS
 	from @formT f
 		left join @sampleT s on PROFIL_K = f.profil_id
-			--and ((child is null and DET in (0,1)) or (child is not null and DET = child))
 			and ((child is null)
 			or (child = 1 and floor(datediff(day, DR, DATE_1) / 365.25) < 18)
 			or (child = 0 and floor(datediff(day, DR, DATE_1) / 365.25) >= 18))
@@ -115,19 +114,19 @@ insert into @form_sampleT
            null,null,null,null,null,null
 	union all
 	select '4', N'для беременных и рожениц', RSLT, DET, DR, DATE_1, KD, NPOLIS
-	from @sampleT where PROFIL_K in (1, 4)
+	from @sampleT where PROFIL_K in (1,4)
 	union all
 	select '5', N'для патологии беременности',
            null,null,null,null,null,null
 	union all
 	select '5', N'для патологии беременности', RSLT, DET, DR, DATE_1, KD, NPOLIS
-	from @sampleT where PROFIL_K in (2, 5)
+	from @sampleT where PROFIL_K in (2,5)
 	union all
 	select '48', N'сестринского ухода',
            null,null,null,null,null,null
 	union all
 	select '48', N'сестринского ухода', RSLT, DET, DR, DATE_1, KD, NPOLIS
-	from @sampleT where PROFIL_K in (3, 54)
+	from @sampleT where PROFIL_K in (3,54)
 
 declare @result table (rowNum nvarchar(10), profil_name nvarchar(200),
 	c7 int, c8 int, c9 int, c10 int, c11 int, c12 int, c13 int, c14 int)
