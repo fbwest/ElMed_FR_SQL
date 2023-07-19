@@ -50,7 +50,7 @@ insert into @sampleT
 	from D3_SL_OMS sl
 		left join D3_ZSL_OMS zsl on zsl.ID = sl.D3_ZSLID
 		left join D3_PACIENT_OMS p on p.ID = zsl.D3_PID
-		join D3_SCHET_OMS sc on zsl.D3_SCID = sc.ID --and sc.YEAR = @year and sc.CODE_MO = @codemo
+		join D3_SCHET_OMS sc on zsl.D3_SCID = sc.ID and sc.YEAR = @year and sc.CODE_MO = @codemo
 	where sl.DS1 <> '' and sl.D3_ZSLID <> '' and sc.ID <> ''
 
 declare @result table (dsName nvarchar(300), rowNumM nvarchar(10), rowNumW nvarchar(10), ds nvarchar(100),
