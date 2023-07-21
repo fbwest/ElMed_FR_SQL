@@ -150,6 +150,7 @@ insert into @result
 select '1', N'Всего',
        sum(c7), sum(c8), sum(c9), sum(c10), sum(c11), sum(c12), sum(c13), sum(c14)
 from @result
+where charindex('.', rowNum) = 0
 
 select * from @result
 order by cast('/'+replace(rowNum,'.','/')+'/' as hierarchyid)

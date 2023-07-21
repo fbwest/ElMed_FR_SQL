@@ -54,8 +54,10 @@ insert into @formT values
 	('41', N'пульмонологические для детей', 63, 1),
 	('42', N'радиологические', 64, null),
 	('43', N'реабилитационные соматические для взрослых', 30, 0),
-	('43.1', N'из них:<br>реабилитационные для больных с заболеваниями центральной нервной системы и органов чувств', 31, 0),
-	('43.2', N'реабилитационные для больных с заболеваниями опорно-двигательного аппарата и периферической нервной системы', 32, 0),
+	('43.1', N'из них:<br>реабилитационные для больных с заболеваниями центральной нервной системы и органов' +
+	         N'чувств', 31, 0),
+	('43.2', N'реабилитационные для больных с заболеваниями опорно-двигательного аппарата и периферической нервной' +
+	         N'системы', 32, 0),
 	('43.3', N'реабилитационные для наркологических больных', 33, 0),
 	('44', N'реабилитационные соматические для детей', 30, 1),
 	('46', N'ревматологические для взрослых', 65, 0),
@@ -106,7 +108,6 @@ insert into @form_sampleT
 	select rowNum, profil_name, RSLT, s.DET, DR, DATE_1, KD, NPOLIS
 	from @formT f
 		left join @sampleT s on PROFIL_K = f.profil_id
-			--and ((child is null and DET in (0,1)) or (child is not null and DET = child))
 			and ((child is null)
 			or (child = 1 and floor(datediff(day, DR, DATE_1) / 365.25) < 18)
 			or (child = 0 and floor(datediff(day, DR, DATE_1) / 365.25) >= 18))
@@ -149,6 +150,7 @@ insert into @result
 select '1', N'Всего',
        sum(c7), sum(c8), sum(c9), sum(c10), sum(c11), sum(c12), sum(c13), sum(c14)
 from @result
+where charindex('.', rowNum) = 0
 
 select * from @result
 order by cast('/'+replace(rowNum,'.','/')+'/' as hierarchyid)

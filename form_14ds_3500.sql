@@ -46,7 +46,7 @@ select dsName, rowNum, ds,
     sum(iif(USL_OK = 1, KD, 0)) as c5,
     count(distinct case when USL_OK = 1 and RSLT in (105,106,205,206,313,405,406,411) then NPOLIS end) as c6,
     count(distinct case when USL_OK = 2 and RSLT in (101,201) then NPOLIS end) as c7,
-    sum(iif(USL_OK = 2, KD, 0)) as c8, --TODO change to sum(iif) everywhere!
+    sum(iif(USL_OK = 2, KD, 0)) as c8,
     count(distinct case when USL_OK = 2 and RSLT in (105,106,205,206,313,405,406,411) then NPOLIS end) as c9
 from @formT	left join @sampleT on DS1 between dsFrom and dsTo or DS1 like dsLike
 group by dsName, rowNum, ds
