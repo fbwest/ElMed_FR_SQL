@@ -31,23 +31,30 @@ insert into @formT values
 	                                    N'учреждения здравоохранения'),
 	('22', 'U07.1-U07.2', null, null, 'U07.[12]', N'COVID-19')
 
-declare @sampleT table (DS1 nvarchar(10), USL_OK int, RSLT int, KD int, NPOLIS nvarchar(20))
+declare @sampleT table (DS1 nvarchar(10), USL_OK int, RSLT int, KD int, NPOLIS nvarchar(20), PodrID int)
 insert into @sampleT
-	select sl.DS1, zsl.USL_OK, zsl.RSLT, sl.KD, p.NPOLIS
+	select sl.DS1, zsl.USL_OK, zsl.RSLT, sl.KD, p.NPOLIS, otd.PodrID
 	from D3_SL_OMS sl
 		left join D3_ZSL_OMS zsl on zsl.ID = sl.D3_ZSLID
 		left join D3_PACIENT_OMS p on p.ID = zsl.D3_PID
+	    left join OtdelDb otd on sl.PODR = OTDID_REGION_NOTEDIT
 		join D3_SCHET_OMS sc on zsl.D3_SCID = sc.ID and sc.YEAR = @year and sc.CODE_MO = @codemo
 	where sl.DS1 <> '' and sl.D3_ZSLID <> '' and sc.ID <> ''
 		and floor(datediff(day, DR, DATE_1) / 365.25) < 18
 
 select dsName, rowNum, ds,
-    count(distinct case when USL_OK = 1 and RSLT in (101,201) then NPOLIS end) as c4,
-    sum(iif(USL_OK = 1, KD, 0)) as c5,
-    count(distinct case when USL_OK = 1 and RSLT in (105,106,205,206,313,405,406,411) then NPOLIS end) as c6,
-    count(distinct case when USL_OK = 2 and RSLT in (101,201) then NPOLIS end) as c7,
-    sum(iif(USL_OK = 2, KD, 0)) as c8,
-    count(distinct case when USL_OK = 2 and RSLT in (105,106,205,206,313,405,406,411) then NPOLIS end) as c9
+    -- дневной - в стационаре
+    count(distinct case when PodrID in (201,211,212,213,214,215,216,217,218)
+                         and RSLT in (101,201) then NPOLIS end) as c4,
+    sum(iif(PodrID in (201,211,212,213,214,215,216,217,218), KD, 0)) as c5,
+    count(distinct case when PodrID in (201,211,212,213,214,215,216,217,218)
+                         and RSLT in (105,106,205,206,313,405,406,411) then NPOLIS end) as c6,
+    -- дневной - в амбулаторных и на дому
+    count(distinct case when PodrID in (202,203,205,206,207,208,209,210)
+                         and RSLT in (101,201) then NPOLIS end) as c7,
+    sum(iif(PodrID in (202,203,205,206,207,208,209,210), KD, 0)) as c8,
+    count(distinct case when PodrID in (202,203,205,206,207,208,209,210)
+                         and RSLT in (105,106,205,206,313,405,406,411) then NPOLIS end) as c9
 from @formT	left join @sampleT on DS1 between dsFrom and dsTo or DS1 like dsLike
 group by dsName, rowNum, ds
 order by cast(rowNum as int)

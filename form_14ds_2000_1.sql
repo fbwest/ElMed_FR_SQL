@@ -98,9 +98,10 @@ insert into @sampleT
 	from D3_SL_OMS sl
 		left join D3_ZSL_OMS zsl on zsl.ID = sl.D3_ZSLID
 		left join D3_PACIENT_OMS p on p.ID = zsl.D3_PID
+	    left join OtdelDb on sl.PODR = OTDID_REGION_NOTEDIT
 		join D3_SCHET_OMS sc on zsl.D3_SCID = sc.ID and sc.YEAR = @year and sc.CODE_MO = @codemo
 	where sl.DS1 <> '' and sl.D3_ZSLID <> '' and sc.ID <> ''
-		and zsl.USL_OK = 2
+		and PodrID in (201,211,212,213,214,215,216,217,218)
 
 declare @form_sampleT table (rowNum nvarchar(10), profil_name nvarchar(200),
 	RSLT int, DET int, DR datetime, DATE_1 datetime, KD int, NPOLIS nvarchar(20))
@@ -133,18 +134,18 @@ insert into @form_sampleT
 declare @result table (rowNum nvarchar(10), profil_name nvarchar(200),
 	c7 int, c8 int, c9 int, c10 int, c11 int, c12 int, c13 int, c14 int)
 insert into @result
-select rowNum, profil_name,
-	-- c3, c4, c5, c6
-	count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) >= 18 then NPOLIS end),
-	count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) > 60 then NPOLIS end),
-	count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) <= 17 then NPOLIS end),
-	count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) <= 3 then NPOLIS end),
-	sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) >= 18, KD, 0)),
-	sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) > 60, KD, 0)),
-	sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) <= 17, KD, 0)),
-	sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) <= 3, KD, 0))
-from @form_sampleT
-group by rowNum, profil_name
+    select rowNum, profil_name,
+        -- c3, c4, c5, c6
+        count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) >= 18 then NPOLIS end),
+        count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) > 60 then NPOLIS end),
+        count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) <= 17 then NPOLIS end),
+        count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) <= 3 then NPOLIS end),
+        sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) >= 18, KD, 0)),
+        sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) > 60, KD, 0)),
+        sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) <= 17, KD, 0)),
+        sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) <= 3, KD, 0))
+    from @form_sampleT
+    group by rowNum, profil_name
 
 insert into @result
 select '1', N'Всего',
