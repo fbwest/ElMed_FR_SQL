@@ -1,6 +1,7 @@
 ﻿declare @year int = 2022
 declare @codemo int = 370024
 
+-- form 12 1001 --
 declare @form table (rowNum nvarchar(10), ds nvarchar(100), dsFrom nvarchar(10), dsTo nvarchar(10),
 	dsLike nvarchar(100), dsLike2 nvarchar(100), dsName nvarchar(300))
 insert into @form values
