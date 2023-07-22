@@ -1,7 +1,7 @@
 ﻿declare @year int = 2022
 declare @codemo int = 370024
 
-declare @formT table (rowNum nvarchar(10), profil_name nvarchar(200), profil_id int, child int)
+declare @formT table (rowNum nvarchar(10), profilName nvarchar(200), profilId int, child int)
 insert into @formT values
 	('2', N'из них:<br>аллергологические для взрослых', 9, 0),
 	('3', N'аллергологические для детей', 9, 1),
@@ -103,12 +103,12 @@ insert into @sampleT
 	where sl.DS1 <> '' and sl.D3_ZSLID <> '' and sc.ID <> ''
 		and PodrID in (201,211,212,213,214,215,216,217,218)
 
-declare @form_sampleT table (rowNum nvarchar(10), profil_name nvarchar(200),
+declare @form_sampleT table (rowNum nvarchar(10), profilName nvarchar(200),
 	RSLT int, DET int, DR datetime, DATE_1 datetime, KD int, NPOLIS nvarchar(20))
 insert into @form_sampleT
-	select rowNum, profil_name, RSLT, s.DET, DR, DATE_1, KD, NPOLIS
+	select rowNum, profilName, RSLT, s.DET, DR, DATE_1, KD, NPOLIS
 	from @formT f
-		left join @sampleT s on PROFIL_K = f.profil_id
+		left join @sampleT s on PROFIL_K = f.profilId
 			and ((child is null)
 			or (child = 1 and floor(datediff(day, DR, DATE_1) / 365.25) < 18)
 			or (child = 0 and floor(datediff(day, DR, DATE_1) / 365.25) >= 18))
@@ -131,10 +131,10 @@ insert into @form_sampleT
 	select '48', N'сестринского ухода', RSLT, DET, DR, DATE_1, KD, NPOLIS
 	from @sampleT where PROFIL_K in (3,54)
 
-declare @result table (rowNum nvarchar(10), profil_name nvarchar(200),
+declare @result table (rowNum nvarchar(10), profilName nvarchar(200),
 	c7 int, c8 int, c9 int, c10 int, c11 int, c12 int, c13 int, c14 int)
 insert into @result
-    select rowNum, profil_name,
+    select rowNum, profilName,
         -- c3, c4, c5, c6
         count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) >= 18 then NPOLIS end),
         count(distinct case when RSLT in (101,201) and floor(datediff(day, DR, DATE_1) / 365.25) > 60 then NPOLIS end),
@@ -145,7 +145,7 @@ insert into @result
         sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) <= 17, KD, 0)),
         sum(iif(floor(datediff(day, DR, DATE_1) / 365.25) <= 3, KD, 0))
     from @form_sampleT
-    group by rowNum, profil_name
+    group by rowNum, profilName
 
 insert into @result
 select '1', N'Всего',
