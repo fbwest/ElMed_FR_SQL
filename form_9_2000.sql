@@ -59,19 +59,19 @@ select dsName, rowNum, ds, id,
     count(distinct iif(W = 2 and floor(datediff(day, DR, DATE_Z_1) / 365.25) between 30 and 39, NPOLIS, null)) as w10,
     count(distinct iif(W = 1 and floor(datediff(day, DR, DATE_Z_1) / 365.25) >= 40, NPOLIS, null)) as m11,
     count(distinct iif(W = 2 and floor(datediff(day, DR, DATE_Z_1) / 365.25) >= 40, NPOLIS, null)) as w11,
-    count(distinct iif(W = 1 and KOD_TER <> '', NPOLIS, null)) as m12,
-    count(distinct iif(W = 2 and KOD_TER <> '', NPOLIS, null)) as w12,
-    count(distinct iif(W = 1 and KOD_TER <> ''
+    count(distinct iif(W = 1 and KOD_TER = 2, NPOLIS, null)) as m12,
+    count(distinct iif(W = 2 and KOD_TER = 2, NPOLIS, null)) as w12,
+    count(distinct iif(W = 1 and KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) <= 1, NPOLIS, null)) as m13,
-    count(distinct iif(W = 2 and KOD_TER <> ''
+    count(distinct iif(W = 2 and KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) <= 1, NPOLIS, null)) as w13,
-    count(distinct iif(W = 1 and KOD_TER <> ''
+    count(distinct iif(W = 1 and KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) between 2 and 14, NPOLIS, null)) as m14,
-    count(distinct iif(W = 2 and KOD_TER <> ''
+    count(distinct iif(W = 2 and KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) between 2 and 14, NPOLIS, null)) as w14,
-    count(distinct iif(W = 1 and KOD_TER <> ''
+    count(distinct iif(W = 1 and KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) between 15 and 17, NPOLIS, null)) as m15,
-    count(distinct iif(W = 2 and KOD_TER <> ''
+    count(distinct iif(W = 2 and KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) between 15 and 17, NPOLIS, null)) as w15
 from @formT	f left join @sampleT on DS1 like dsLike
 group by dsName, rowNum, ds, id

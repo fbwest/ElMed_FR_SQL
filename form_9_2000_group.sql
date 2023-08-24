@@ -28,12 +28,12 @@ select dsName, rowNum, ds, id,
     count(distinct iif(floor(datediff(day, DR, DATE_Z_1) / 365.25) between 18 and 29, NPOLIS, null)) as c9,
     count(distinct iif(floor(datediff(day, DR, DATE_Z_1) / 365.25) between 30 and 39, NPOLIS, null)) as c10,
     count(distinct iif(floor(datediff(day, DR, DATE_Z_1) / 365.25) >= 40, NPOLIS, null)) as c11,
-    count(distinct iif(KOD_TER <> '', NPOLIS, null)) as c12,
-    count(distinct iif(KOD_TER <> ''
+    count(distinct iif(KOD_TER = 2, NPOLIS, null)) as c12,
+    count(distinct iif(KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) <= 1, NPOLIS, null)) as c13,
-    count(distinct iif(KOD_TER <> ''
+    count(distinct iif(KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) between 2 and 14, NPOLIS, null)) as c14,
-    count(distinct iif(KOD_TER <> ''
+    count(distinct iif(KOD_TER = 2
                            and floor(datediff(day, DR, DATE_Z_1) / 365.25) between 15 and 17, NPOLIS, null)) as c15
 from @formT	f left join @sampleT on DS1 like dsLike
 group by dsName, rowNum, ds, id
